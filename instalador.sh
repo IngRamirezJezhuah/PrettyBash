@@ -143,25 +143,60 @@ echo -e "${verde}==================================================${nc}"
 sleep 1
 echo -e "${amarillo} Integrando a la terminal...${nc}"
 sleep 1
-# append del contenido de prettybash
-#
-ZSH= find /home/$USER/ -type f -name "*.zshrc"   
-#BASH= find /home/$USER/ -type f -name "*.bashrc" 
 
-DIR="$(dirname "$0")"
+#============================================
+#       CONFIG SEGUN QUE SHELL HAYA         |
+#============================================
 
-if ZSH == ".zshrc"
-  echo -e "${azul} tienes zsh ..."
-  sleep .5
-  echo -e "${amarillo} implementando integracion..."
+if [ -f "$HOME/.zshrc" ]; then
+  CONF_FILE="$HOME/.zshrc"
+  SHELL_NAME="Zsh"
+  echo -e "${azul} Se detecto $SHELL_NAME en $CONF_FILE ${nc}"
+elif [ -f "$HOME/.bashrc" ]; then
+  CONF_FILE="$HOME/.bashrc"
+  SHELL_NAME="Bash"
+  echo -e "${azul} Se detecto $SHELL_NAME en $CONF_FILE ${nc}"
+else
+  echo -e "${rojo} No se encontro archivo de configuracion (.bashrc o .zshrc) ${nc}"
+  exit 1
 fi
 
-#if $BASH == true
-#  echo -e "${azul} tienes bash..."
-#  sleep .5
-#  echo -e "${amarillo} implementando integracion..."
-#  sleep 1
-#fi
+#============================================
+#       IMPLEMENTACION DEL SCRIPT           |
+#============================================
+
+#cat /home/djxs4n/Documentos/Programacion/PrettyBash/PrettyBash.sh  >> /home/djxs4n/Documentos/Programacion/PrettyBash/zshrc
+
+ORIGEN="$(dirname "$0")"
+DESTINO="$HOME/.config/prettybash"
+
+mkdir $DESTINO
 
 
-cat /home/djxs4n/Documentos/Programacion/PrettyBash/PrettyBash.sh  >> /home/djxs4n/Documentos/Programacion/PrettyBash/zshrc
+if [ -d "$ORIGEN" ]; then
+  cp -rf "$ORIGEN"/* "$DESTINO/"
+  echo -e "${verde} Archivos del widget copados a $DESTINO ${nc}"
+else
+  echo -e "${amarillo} Aviso: No se encontro la carpeta de origen $ORIGEN para copiar ${nc}"
+fi
+
+#===============================================
+#     APPEND DE PRETYBASH SIN DUPLICADO        |
+#===============================================
+LINEA_WIDGET="source $DESTINO/PrettyBash.sh"
+
+if ! grep -q "$LINEA_WIDGET" "$CONF_FILE"; then
+  echo -e "\n# PrettyBash Integration\n$LINEA_WIDGET" >> "$CONF_FILE"
+  echo -e "${verde} !Integracion comlpetada en tu $SHELL_NAME ! ${nc}"
+else 
+  echo -e "${azul} El widget ya estaba integrado en tu $SHELL_NAME ${nc}"
+fi
+
+sleep 1
+
+echo -e "${verde}==================================================${nc}"
+echo -e "${azul}   Instalación de PrettyBash Finalizada   ${nc}"
+echo -e "${verde}==================================================${nc}"
+
+
+
