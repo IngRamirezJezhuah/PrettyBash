@@ -1,7 +1,8 @@
-#!/bin/bash
-#source 
+#=======================================
+#  	PrettyBash By Djxs4n	       |
+#=======================================
+
 DIR="$(dirname "$0")"
-echo -e "$DIR" 
 
 IMG_DIR="$DIR/Pretty_Bash/"
 
